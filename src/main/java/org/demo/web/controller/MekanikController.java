@@ -8,13 +8,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 //--- Common classes
@@ -218,6 +222,22 @@ public class MekanikController extends AbstractController {
 			messageHelper.addException(redirectAttributes, "mekanik.error.delete", e);
 		}
 		return redirectToList();
+	}
+
+	@RequestMapping(value = "/pdf", method = RequestMethod.GET)
+	public String getPdfReport(Model model, HttpServletResponse response) {
+		List<Mekanik> entities = (List<Mekanik>) mekanikService.findAll();
+		JRDataSource dataSource = new JRBeanCollectionDataSource(entities);
+		model.addAttribute("dataSource", dataSource);
+		return "pdfReport";
+	}
+
+	@RequestMapping(value = "/xls", method = RequestMethod.GET)
+	public String getXlsReport(Model model, HttpServletResponse response) {
+		List<Mekanik> entities = (List<Mekanik>) mekanikService.findAll();
+		JRDataSource dataSource = new JRBeanCollectionDataSource(entities);
+		model.addAttribute("dataSource", dataSource);
+		return "xlsReport";
 	}
 
 }
